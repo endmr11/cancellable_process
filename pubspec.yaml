@@ -1,0 +1,21 @@
+name: cancellable_process
+description: A new Flutter package project.
+version: 0.0.1
+homepage: "https://github.com/endmr11/cancellable_process"
+
+environment:
+  sdk: '>=3.0.2 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  either_dart: ^1.0.0
+  async: ^2.11.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter: null
