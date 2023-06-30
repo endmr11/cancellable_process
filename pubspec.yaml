@@ -1,5 +1,5 @@
 name: cancellable_process
-description: A new Flutter package project.
+description: Provides an easy way to retry asynchronous functions.
 version: 0.0.1
 homepage: "https://github.com/endmr11/cancellable_process"
 
