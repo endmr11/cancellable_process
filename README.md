@@ -2,7 +2,6 @@
 
 Provides an easy way to retry asynchronous functions. The delay and asynchronous functions you will give are repeated according to the maximum number of repetitions you will give, and the answer is returned as an error or correct result. Error handling is provided using the Either package.
 
-
 **[⚠ Dependency Warning]()**
 
 Either: https://pub.dev/packages/either_dart
@@ -18,13 +17,14 @@ void main() {
     return Random().nextInt(max);
   }
 
-  var cancellable = CancellableProcess<int, int>(
-    fnWithArgs: randomNumber,
+  var cancellable = CancellableProcess<int, int>.withArgs(
+    function: randomNumber,
     timeout: const Duration(seconds: 5),
     retryReason: (val) => val == 3,
     maxAttempts: 2,
     arg: 20,
   );
+
   var handler = await cancellable.run();
 
   if (handler.isLeft) {
@@ -33,6 +33,30 @@ void main() {
     print(handler.right);
   }
 }
+
+
+void main() {
+  Future<int> randomNumber() async {
+    await Future.delayed(const Duration(seconds: 2));
+    return Random().nextInt(20);
+  }
+
+  var cancellable = CancellableProcess<int, int>(
+    fn: randomNumber,
+    timeout: const Duration(seconds: 5),
+    retryReason: (val) => val == 3,
+    maxAttempts: 10,
+  );
+  
+  var handler = await cancellable.run();
+
+  if (handler.isLeft) {
+    print(handler.left.errorMsg);
+  } else {
+    print(handler.right);
+  }
+}
+
 
 ```
 

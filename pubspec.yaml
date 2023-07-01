@@ -1,6 +1,6 @@
 name: cancellable_process
 description: Provides an easy way to retry asynchronous functions.
-version: 0.0.2
+version: 0.0.3
 homepage: "https://github.com/endmr11/cancellable_process"
 
 environment:
