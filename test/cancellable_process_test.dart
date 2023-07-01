@@ -13,8 +13,8 @@ void main() async {
         return Random().nextInt(max);
       }
 
-      var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, int>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 3,
         maxAttempts: 2,
@@ -37,8 +37,8 @@ void main() async {
         return Random().nextInt(arg.first as int);
       }
 
-      var cancellable = CancellableProcess<int, List<Object>>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, List<Object>>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 3,
         maxAttempts: 2,
@@ -61,7 +61,7 @@ void main() async {
       }
 
       var cancellable = CancellableProcess<int, int>(
-        fnWithoutArgs: randomNumber,
+        fn: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 3,
         maxAttempts: 10,
@@ -83,8 +83,8 @@ void main() async {
         return Random().nextInt(max);
       }
 
-      var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, int>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 3,
         maxAttempts: 2,
@@ -107,8 +107,8 @@ void main() async {
         return Random().nextInt(max);
       }
 
-      var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, int>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 0,
         maxAttempts: 2,
@@ -132,8 +132,8 @@ void main() async {
         return Random().nextInt(max);
       }
 
-      var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, int>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 5),
         retryReason: (val) => val == 0,
         maxAttempts: 2,
@@ -156,8 +156,8 @@ void main() async {
         return Random().nextInt(max);
       }
 
-      var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: randomNumber,
+      var cancellable = CancellableProcess<int, int>.withArgs(
+        function: randomNumber,
         timeout: const Duration(seconds: 10),
         retryReason: (val) => val == 99,
         maxAttempts: 2,
@@ -177,12 +177,10 @@ void main() async {
 
     test('Null Futures Test', () async {
       var cancellable = CancellableProcess<int, int>(
-        fnWithArgs: null,
-        fnWithoutArgs: null,
+        fn: null,
         timeout: const Duration(seconds: 10),
         retryReason: (val) => val == 99,
         maxAttempts: 2,
-        arg: 5,
       );
       try {
         var handler = await cancellable.run();
