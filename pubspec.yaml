@@ -1,6 +1,6 @@
 name: cancellable_process
-description: Provides an easy way to retry asynchronous functions.
-version: 0.0.3
+description: Provides an easy way to retry asynchronous functions. The delay and asynchronous functions you will give are repeated according to the maximum number of repetitions you will give, and the answer is returned as an error or correct result. Error handling is provided using the Either package.
+version: 0.0.4
 homepage: "https://github.com/endmr11/cancellable_process"
 
 environment:

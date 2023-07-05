@@ -10,7 +10,7 @@ Async: https://pub.dev/packages/async
 ## Usage/Example
 
 ```dart
-
+//With Arguments Function Example
 void main() {
   Future<int> randomNumber(int max) async {
     await Future.delayed(const Duration(seconds: 2));
@@ -34,7 +34,7 @@ void main() {
   }
 }
 
-
+//Without Arguments Function Example
 void main() {
   Future<int> randomNumber() async {
     await Future.delayed(const Duration(seconds: 2));
@@ -47,7 +47,7 @@ void main() {
     retryReason: (val) => val == 3,
     maxAttempts: 10,
   );
-  
+
   var handler = await cancellable.run();
 
   if (handler.isLeft) {
@@ -56,7 +56,28 @@ void main() {
     print(handler.right);
   }
 }
+// Future Cancel Example
+void main() {
+  Future<int> randomNumber(int max) async {
+    await Future.delayed(const Duration(seconds: 6));
+    return Random().nextInt(max);
+  }
 
+  var cancellable = CancellableProcess<int, int>.withArgs(
+    function: randomNumber,
+    timeout: const Duration(seconds: 10),
+    retryReason: (val) => val == 99,
+    maxAttempts: 2,
+    arg: 5,
+  );
+  cancellable.run();
+  print("Cancellable Run");
+  await Future.delayed(const Duration(seconds: 1),() {
+    print("Cancel Start");
+    cancellable.cancel();
+   },
+ );
+}
 
 ```
 
