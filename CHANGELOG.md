@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Minimum dart sdk version supported.
+
 ## 0.0.4
 
 * Update Readme.
