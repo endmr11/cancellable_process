@@ -41,7 +41,7 @@ void main() {
   }
 
   var cancellable = CancellableProcess<int>(
-    fn: randomNumber,
+    function: randomNumber,
     timeout: const Duration(seconds: 5),
     retryReason: (val) => val == 3,
     maxAttempts: 10,
