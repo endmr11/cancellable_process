@@ -4,12 +4,14 @@ import 'package:async/async.dart';
 import 'package:cancellable_process/cancellable_process.dart';
 import 'package:either_dart/either.dart';
 
-class CancellableProcess<T, K> {
+typedef AsyncCallback<T> = Future<T> Function();
+
+class CancellableProcess<T> {
   /// [timeout] Specifies the timeout period of the given function.
   Duration timeout;
 
   /// [fn] The function you want to run.
-  Future<T> Function()? fn;
+  AsyncCallback<T>? function;
 
   /// [retryReason] Indicates situations that require retrying of the given function
   bool Function(T)? retryReason;
@@ -26,36 +28,19 @@ class CancellableProcess<T, K> {
 
   /// [CancellableProcess] For functions without parameters.
   CancellableProcess({
-    this.fn,
+    this.function,
     required this.timeout,
     required this.retryReason,
     required this.maxAttempts,
   });
 
-  /// [CancellableProcess.withArgs] For functions with parameters.
-  factory CancellableProcess.withArgs({
-    required Future<T> Function(K) function,
-    required timeout,
-    required retryReason,
-    required maxAttempts,
-    required dynamic arg,
-  }) {
-    return _CancellableProcessWithArgs(
-      maxAttempts: maxAttempts,
-      retryReason: retryReason,
-      timeout: timeout,
-      fnWithArgs: function,
-      arg: arg,
-    );
-  }
-
   /// [run] Runs the process you describe.
   Future<AppResult<T>> run() async {
     _completer ??= CancelableCompleter<AppResult<T>>();
-    if (fn == null) {
-      throw "fn should be use!";
+    if (function == null) {
+      throw "function should be use!";
     }
-    await fn!().then((value) async {
+    await function!().then((value) async {
       _currentAttempt++;
       if (retryReason != null) {
         if (retryReason!(value)) {
@@ -111,76 +96,5 @@ class CancellableProcess<T, K> {
 
   Future<void> cancel() async {
     _completer?.operation.cancel();
-  }
-}
-
-class _CancellableProcessWithArgs<T, K> extends CancellableProcess<T, K> {
-  _CancellableProcessWithArgs({
-    required super.timeout,
-    required super.retryReason,
-    required super.maxAttempts,
-    required this.fnWithArgs,
-    required this.arg,
-  });
-  Future<T> Function(K)? fnWithArgs;
-  dynamic arg;
-  @override
-  Future<AppResult<T>> run() async {
-    _completer ??= CancelableCompleter<AppResult<T>>();
-    if (fnWithArgs == null) {
-      throw "fn should be use!";
-    }
-    await fnWithArgs!(arg).then((value) async {
-      _currentAttempt++;
-      if (retryReason != null) {
-        if (retryReason!(value)) {
-          if (_currentAttempt < maxAttempts) {
-            if (delay != null) await Future.delayed(delay!);
-            await run();
-          } else {
-            _currentAttempt = 0;
-            if (!(_completer?.isCanceled ?? true) && !(_completer?.isCompleted ?? true)) {
-              _completer?.complete(Left(ProcessError(ProcessErrorType.maxAttempts, errorMsg: "Max Attempts Error")));
-            }
-          }
-        } else {
-          _currentAttempt = 0;
-          if (!(_completer?.isCanceled ?? true) && !(_completer?.isCompleted ?? true)) {
-            _completer?.complete(Right(value));
-          }
-        }
-      } else {
-        _currentAttempt = 0;
-        if (!(_completer?.isCanceled ?? true) && !(_completer?.isCompleted ?? true)) {
-          _completer?.complete(Right(value));
-        }
-      }
-    }).catchError((e, s) async {
-      _currentAttempt++;
-      if (_currentAttempt < maxAttempts) {
-        if (delay != null) await Future.delayed(delay!);
-        await run();
-      } else {
-        _currentAttempt = 0;
-        if (!(_completer?.isCanceled ?? true) && !(_completer?.isCompleted ?? true)) {
-          _completer?.complete(Left(ProcessError(ProcessErrorType.catchError, errorMsg: e.toString())));
-        }
-      }
-    }).timeout(
-      timeout,
-      onTimeout: () async {
-        _currentAttempt++;
-        if (_currentAttempt < maxAttempts) {
-          if (delay != null) await Future.delayed(delay!);
-          await run();
-        } else {
-          _currentAttempt = 0;
-          if (!(_completer?.isCanceled ?? true) && !(_completer?.isCompleted ?? true)) {
-            _completer?.complete(Left(ProcessError(ProcessErrorType.timeout, errorMsg: "Timeout Error")));
-          }
-        }
-      },
-    );
-    return _completer!.operation.value;
   }
 }

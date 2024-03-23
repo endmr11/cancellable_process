@@ -17,12 +17,11 @@ void main() {
     return Random().nextInt(max);
   }
 
-  var cancellable = CancellableProcess<int, int>.withArgs(
-    function: randomNumber,
+  var cancellable = CancellableProcess<int>(
+    function: () => randomNumber(20),
     timeout: const Duration(seconds: 5),
     retryReason: (val) => val == 3,
     maxAttempts: 2,
-    arg: 20,
   );
 
   var handler = await cancellable.run();
@@ -41,7 +40,7 @@ void main() {
     return Random().nextInt(20);
   }
 
-  var cancellable = CancellableProcess<int, int>(
+  var cancellable = CancellableProcess<int>(
     fn: randomNumber,
     timeout: const Duration(seconds: 5),
     retryReason: (val) => val == 3,
@@ -63,12 +62,11 @@ void main() {
     return Random().nextInt(max);
   }
 
-  var cancellable = CancellableProcess<int, int>.withArgs(
-    function: randomNumber,
+  var cancellable = CancellableProcess<int>(
+    function: () => randomNumber(20),
     timeout: const Duration(seconds: 10),
     retryReason: (val) => val == 99,
     maxAttempts: 2,
-    arg: 5,
   );
   cancellable.run();
   print("Cancellable Run");

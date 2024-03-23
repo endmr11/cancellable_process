@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Code improvements.
+
 ## 0.0.5
 
 * Minimum dart sdk version supported.
