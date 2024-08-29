@@ -2,6 +2,8 @@
 
 Provides an easy way to retry asynchronous functions. The delay and asynchronous functions you will give are repeated according to the maximum number of repetitions you will give, and the answer is returned as an error or correct result. Error handling is provided using the Either package.
 
+## Who made it? It's Eren ;)
+
 **[⚠ Dependency Warning]()**
 
 Either: https://pub.dev/packages/either_dart
